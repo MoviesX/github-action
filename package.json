@@ -1,0 +1,14 @@
+{
+	"name": "github-action",
+	"version": "1.0.0",
+	"main": "src/app.js",
+	"author": "Safin Ali",
+	"scripts": {
+		"start": "node src/app.js",
+		"build":"npx tsc"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"typescript": "^5.4.2"
+	}
+}
