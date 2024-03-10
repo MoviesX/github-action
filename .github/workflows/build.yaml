@@ -26,17 +26,18 @@ jobs:
         id: get_version
         run: echo "::set-output name=VERSION::$(node -e "console.log(require('./package.json').version)")"
 
-      - name: Delete TypeScript
-        run: find src -type f -name "*.ts" -delete # delete typescript code files for organize codes
-
       - name: Build,Commit and push changes
         run: |
           git config --local user.email "safin.ali.7205@gmail.com"
           git config --local user.name "Safin-Ali"
+          git fetch origin release
           git checkout release
-          git checkout main "src/"
+          git checkout main -- "."
+          git checkout release -- ".gitignore"
           yarn build
           git reset "src/*.ts"
+          git status
           git add -A
+          git status
           git commit -m "Stable V${{ steps.get_version.outputs.VERSION }}"
           git push origin release
