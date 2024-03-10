@@ -1,0 +1,43 @@
+name: TypeScript Build
+
+on:
+  push:
+    branches:
+      - main # You can change this to your default branch name
+    workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18' # You can specify any Node.js version you prefer
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Get version from package.json
+        id: get_version
+        run: echo "::set-output name=VERSION::$(node -e "console.log(require('./package.json').version)")"
+
+      - name: Build,Commit and push changes
+        run: |
+          git config --local user.email "safin.ali.7205@gmail.com"
+          git config --local user.name "Safin-Ali"
+          git fetch origin release
+          git checkout release
+          git checkout main -- "."
+          git checkout release -- ".gitignore"
+          yarn build
+          git reset "src/*.ts"
+          git status
+          git add -A
+          git status
+          git commit -m "Stable V${{ steps.get_version.outputs.VERSION }}"
+          git push origin release
